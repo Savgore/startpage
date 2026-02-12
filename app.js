@@ -49,51 +49,54 @@
         el.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
     }
 
-    // ---- Weather (wttr.in) ----
-    const WEATHER_ICONS = {
-        Clear: "☀️",
-        Sunny: "☀️",
-        "Partly cloudy": "⛅",
-        "Partly Cloudy": "⛅",
-        Cloudy: "☁️",
-        Overcast: "☁️",
-        Mist: "🌫️",
-        Fog: "🌫️",
-        "Patchy rain possible": "🌦️",
-        "Patchy rain nearby": "🌦️",
-        "Light rain": "🌧️",
-        "Light drizzle": "🌧️",
-        "Moderate rain": "🌧️",
-        Rain: "🌧️",
-        "Heavy rain": "🌧️",
-        Thunderstorm: "⛈️",
-        Snow: "🌨️",
-        "Light snow": "🌨️",
-        Sleet: "🌨️",
-        Blizzard: "❄️",
+    // ---- Weather (Open-Meteo — free, no API key) ----
+    const WMO_CODES = {
+        0: ["☀️", "Clear sky"],
+        1: ["🌤️", "Mainly clear"],
+        2: ["⛅", "Partly cloudy"],
+        3: ["☁️", "Overcast"],
+        45: ["🌫️", "Fog"],
+        48: ["🌫️", "Rime fog"],
+        51: ["🌦️", "Light drizzle"],
+        53: ["🌦️", "Drizzle"],
+        55: ["🌧️", "Heavy drizzle"],
+        56: ["🌧️", "Freezing drizzle"],
+        57: ["🌧️", "Heavy freezing drizzle"],
+        61: ["🌧️", "Light rain"],
+        63: ["🌧️", "Rain"],
+        65: ["🌧️", "Heavy rain"],
+        66: ["🌧️", "Freezing rain"],
+        67: ["🌧️", "Heavy freezing rain"],
+        71: ["🌨️", "Light snow"],
+        73: ["🌨️", "Snow"],
+        75: ["❄️", "Heavy snow"],
+        77: ["❄️", "Snow grains"],
+        80: ["🌦️", "Light showers"],
+        81: ["🌧️", "Showers"],
+        82: ["🌧️", "Heavy showers"],
+        85: ["🌨️", "Light snow showers"],
+        86: ["🌨️", "Snow showers"],
+        95: ["⛈️", "Thunderstorm"],
+        96: ["⛈️", "Thunderstorm with hail"],
+        99: ["⛈️", "Thunderstorm with heavy hail"],
     };
 
-    function getWeatherIcon(desc) {
-        for (const [key, icon] of Object.entries(WEATHER_ICONS)) {
-            if (desc.toLowerCase().includes(key.toLowerCase())) return icon;
-        }
-        return "🌡️";
-    }
-
     async function fetchWeather() {
-        const loc = encodeURIComponent(CONFIG.weather.location);
+        const { latitude, longitude } = CONFIG.weather;
+        const unit = CONFIG.weather.units === "imperial" ? "fahrenheit" : "celsius";
+        const symbol = CONFIG.weather.units === "imperial" ? "°F" : "°C";
         try {
-            const res = await fetch(`https://wttr.in/${loc}?format=j1`);
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=${unit}&timezone=auto`;
+            const res = await fetch(url);
             if (!res.ok) throw new Error("Weather fetch failed");
             const data = await res.json();
 
-            const current = data.current_condition[0];
-            const desc = current.weatherDesc[0].value;
-            const tempKey = CONFIG.weather.units === "imperial" ? "temp_F" : "temp_C";
-            const unit = CONFIG.weather.units === "imperial" ? "°F" : "°C";
+            const temp = Math.round(data.current.temperature_2m);
+            const code = data.current.weather_code;
+            const [icon, desc] = WMO_CODES[code] || ["🌡️", "Unknown"];
 
-            $("#weather-icon").textContent = getWeatherIcon(desc);
-            $("#weather-temp").textContent = `${current[tempKey]}${unit}`;
+            $("#weather-icon").textContent = icon;
+            $("#weather-temp").textContent = `${temp}${symbol}`;
             $("#weather-desc").textContent = desc;
         } catch (err) {
             console.warn("Weather error:", err);

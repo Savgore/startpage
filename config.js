@@ -4,8 +4,9 @@ const CONFIG = {
 
   // Weather settings
   weather: {
-    location: "Coventry",     // City name for weather lookup
-    units: "metric",         // "metric" (°C) or "imperial" (°F)
+    latitude: 52.41,           // Coventry
+    longitude: -1.51,
+    units: "metric",           // "metric" (°C) or "imperial" (°F)
   },
 
   // Background — local file path or full URL
