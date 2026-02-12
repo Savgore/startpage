@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start</title>
+  <meta name="description" content="Personal startpage with grouped shortcuts, weather, and search." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Background overlay -->
+  <div id="bg" class="bg"></div>
+  <div class="bg-overlay"></div>
+
+  <!-- Main content -->
+  <main class="container">
+
+    <!-- Header: greeting + weather -->
+    <header class="header" id="header">
+      <div class="header-left">
+        <h1 class="greeting" id="greeting"></h1>
+        <p class="date" id="date"></p>
+      </div>
+      <div class="header-right">
+        <div class="weather" id="weather">
+          <span class="weather-icon" id="weather-icon"></span>
+          <span class="weather-temp" id="weather-temp">--°</span>
+          <span class="weather-desc" id="weather-desc">Loading…</span>
+        </div>
+        <p class="clock" id="clock"></p>
+      </div>
+    </header>
+
+
+
+    <!-- Shortcut groups -->
+    <section class="groups" id="groups"></section>
+
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
