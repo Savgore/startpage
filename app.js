@@ -120,15 +120,23 @@
                 const li = document.createElement("li");
                 li.className = "link-item";
                 li.innerHTML = `
-          <a href="${link.url}" target="_self" rel="noopener">
+          <a href="${link.url}" target="_blank" rel="noopener noreferrer">
             <span class="link-icon">${link.icon}</span>
             ${link.name}
           </a>`;
                 list.appendChild(li);
             });
 
+            const openAll = document.createElement("button");
+            openAll.className = "open-all-btn";
+            openAll.textContent = "Open All";
+            openAll.addEventListener("click", () => {
+                group.links.forEach((link) => window.open(link.url, "_blank"));
+            });
+
             card.appendChild(title);
             card.appendChild(list);
+            card.appendChild(openAll);
             container.appendChild(card);
         });
     }
